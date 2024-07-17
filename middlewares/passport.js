@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const ContentCreator = require("../models/ContentCreator");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const JwtStrategy = require("passport-jwt").Strategy;
@@ -12,15 +12,17 @@ const localStrategy = new LocalStrategy(
   },
   async (username, password, next) => {
     try {
-      const user = await User.findOne({ username: username });
-      if (!user) {
+      const contentCreator = await ContentCreator.findOne({
+        username: username,
+      });
+      if (!contentCreator) {
         return next({ msg: "Username or password is wrong!" });
       }
       const checkPassword = await bcrypt.compare(password, user.password);
       if (checkPassword == false) {
         return next({ msg: "Username or password is wrong!" });
       }
-      next(false, user);
+      next(false, contentCreator);
     } catch (error) {
       next(error);
     }
@@ -41,13 +43,13 @@ const jwtStrategy = new JwtStrategy(
       return next({ msg: "Token expiered!" });
     }
 
-    const user = await User.findById(payload._id);
+    const contentCreator = await ContentCreator.findById(payload._id);
 
-    if (!user) {
+    if (!contentCreator) {
       return next({ msg: "User not found!" });
     }
 
-    next(false, user);
+    next(false, contentCreator);
   }
 );
 
