@@ -5,14 +5,14 @@ const { getProfile, register, updateProfile } = require("./controllers");
 const upload = require("../../middlewares/multer");
 const passport = require("passport");
 
-const contentcreatorRouter = express.Router();
+const creatorRouter = express.Router();
 
-contentcreatorRouter.get(
+creatorRouter.get(
   "/profile/",
   passport.authenticate("jwt", { session: false }),
   getProfile
 );
-contentcreatorRouter.post("/register", register);
-contentcreatorRouter.put("/profile/:id", upload.single("image"), updateProfile);
+creatorRouter.post("/register", register);
+creatorRouter.put("/profile/:id", upload.single("image"), updateProfile);
 
-module.exports = contentcreatorRouter;
+module.exports = creatorRouter;

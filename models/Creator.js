@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ContentCreatorSchema = new mongoose.Schema({
+const CreatorSchema = new mongoose.Schema({
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   email: { type: String, unique: true, required: true },
@@ -11,4 +11,4 @@ const ContentCreatorSchema = new mongoose.Schema({
   links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Links" }],
 });
 
-module.exports = mongoose.model("ContentCreator", ContentCreatorSchema);
+module.exports = mongoose.model("Creator", CreatorSchema);
