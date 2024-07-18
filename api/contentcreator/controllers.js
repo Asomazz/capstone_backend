@@ -28,7 +28,37 @@ const register = async (req, res, next) => {
   }
 };
 
+const getProfile = async (req, res, next) => {
+  try {
+    const contentCreator = await ContentCreator.findById(req.body._id);
+    return res.json(contentCreator);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateProfile = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    if (req.file) {
+      req.body.image = req.file.path;
+    }
+    const updatedProfile = await ContentCreator.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    return res.status(200).json(updatedProfile);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   generateToken,
   register,
+  getProfile,
+  updateProfile,
 };
