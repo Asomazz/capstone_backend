@@ -30,8 +30,7 @@ const register = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    const contentCreator = await ContentCreator.findById(req.body._id);
-    return res.json(contentCreator);
+    return res.json(req.user);
   } catch (error) {
     next(error);
   }
