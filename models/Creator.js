@@ -8,6 +8,7 @@ const CreatorSchema = new mongoose.Schema({
   name: { type: String },
   bio: { type: String },
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+  links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Links" }],
 });
 
 module.exports = mongoose.model("Creator", CreatorSchema);

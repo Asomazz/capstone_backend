@@ -1,12 +1,12 @@
 const express = require("express");
-const router = express.Router();
+const productRouter = express.Router();
 const { createOneProduct } = require("./controllers");
 const passport = require("passport");
 
-router.post(
+productRouter.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   createOneProduct
 );
 
-module.exports = router;
+module.exports = productRouter;

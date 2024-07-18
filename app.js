@@ -8,8 +8,7 @@ const path = require("path");
 const morgan = require("morgan");
 const cors = require("cors");
 const creatorRouter = require("./api/creator/routes");
-const { createOneProduct } = require("./api/product/controllers");
-const router = require("./api/product/routes");
+const productRouter = require("./api/product/routes");
 
 const app = express();
 
@@ -25,7 +24,7 @@ passport.use("jwt", jwtStrategy);
 app.use("/media", express.static(path.join(__dirname, "media")));
 
 //  routers
-app.use("/product", router);
+app.use("/product", productRouter);
 app.use("/creator", creatorRouter);
 
 // middlewares after routers
