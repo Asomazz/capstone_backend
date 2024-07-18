@@ -38,12 +38,12 @@ const createOneProduct = async (req, res, next) => {
     const newProduct = await Product.create(req.body);
 
     // Assuming you have req.body.creatorId correctly set
-    await Creator.findOneAndUpdate(
-      { _id: req.body.creatorId },
-      {
-        $push: { products: newProduct._id },
-      }
-    );
+    // await Creator.findOneAndUpdate(
+    //   { _id: req.body.creatorId },
+    //   {
+    //     $push: { products: newProduct._id },
+    //   }
+    // );
 
     return res.status(201).json(newProduct);
   } catch (error) {
