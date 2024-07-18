@@ -17,6 +17,7 @@ const generateToken = (creator) => {
 
 const register = async (req, res, next) => {
   try {
+    console.log(req.body);
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const newCreator = await Creator.create(req.body);
 
