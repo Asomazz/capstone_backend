@@ -17,7 +17,6 @@ const generateToken = (creator) => {
 
 const register = async (req, res, next) => {
   try {
-    console.log(req.body);
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const newCreator = await Creator.create(req.body);
 
@@ -38,7 +37,7 @@ const getProfile = async (req, res, next) => {
 };
 
 const updateProfile = async (req, res, next) => {
-  const id = req.params.id;
+  const id = req.user._id;
   try {
     if (req.file) {
       req.body.image = req.file.path;
