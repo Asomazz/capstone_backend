@@ -37,14 +37,18 @@ const getProfile = async (req, res, next) => {
 };
 
 const updateProfile = async (req, res, next) => {
-  const id = req.user._id;
   try {
+    console.log(req.user);
     if (req.file) {
       req.body.image = req.file.path;
     }
-    const updatedProfile = await Creator.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedProfile = await Creator.findByIdAndUpdate(
+      req.user._id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     return res.status(200).json(updatedProfile);
   } catch (error) {
     return next(error);
