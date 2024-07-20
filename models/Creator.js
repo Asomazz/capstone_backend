@@ -7,6 +7,7 @@ const CreatorSchema = new mongoose.Schema({
   image: { type: String },
   name: { type: String },
   bio: { type: String },
+  revenue: { type: Number },
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
   instagram: { type: String },
   snapchat: { type: String },
