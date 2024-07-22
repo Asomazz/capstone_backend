@@ -7,7 +7,7 @@ const CreatorSchema = new mongoose.Schema({
   image: { type: String },
   name: { type: String },
   bio: { type: String },
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Links" }],
 });
 
