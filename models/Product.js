@@ -10,6 +10,8 @@ const ProductSchema = new mongoose.Schema({
   price: Number,
   // creator: { type: mongoose.Schema.Types.ObjectId, ref: "Creator" },
   // receipt: { type: mongoose.Schema.Types.ObjectId, ref: "Receipt" },
+},{
+  timestamps: true,
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
