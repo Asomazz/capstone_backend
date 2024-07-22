@@ -12,7 +12,12 @@ creatorRouter.get(
   passport.authenticate("jwt", { session: false }),
   getProfile
 );
-creatorRouter.post("/register", register);
-creatorRouter.put("/profile/:id", upload.single("image"), updateProfile);
+creatorRouter.post("/register/", register);
+creatorRouter.put(
+  "/profile/",
+  passport.authenticate("jwt", { session: false }),
+  // upload.single("image"),
+  updateProfile
+);
 
 module.exports = creatorRouter;
