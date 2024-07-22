@@ -7,6 +7,7 @@ const generateToken = (creator) => {
   const payload = {
     _id: creator._id,
     username: creator.username,
+    email: creator.email,
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TOKEN_EXP,
@@ -37,15 +38,27 @@ const getProfile = async (req, res, next) => {
 };
 
 const updateProfile = async (req, res, next) => {
-  const id = req.user._id;
   try {
     if (req.file) {
       req.body.image = req.file.path;
     }
-    const updatedProfile = await Creator.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedProfile = await Creator.findByIdAndUpdate(
+      req.user._id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     return res.status(200).json(updatedProfile);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const login = (req, res, next) => {
+  try {
+    const token = generateToken(req.user);
+    return res.json({ token });
   } catch (error) {
     return next(error);
   }
@@ -56,4 +69,5 @@ module.exports = {
   register,
   getProfile,
   updateProfile,
+  login,
 };
