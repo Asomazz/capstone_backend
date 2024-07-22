@@ -1,36 +1,9 @@
 const Creator = require("../../models/Creator.js");
 const Product = require("../../models/Product.js");
 
-// const createOneProduct = async (req, res, next) => {
-//   try {
-//     req.body.user = req.user._id;
-//     if (req.file) {
-//       req.body.image = req.file.path;
-//     }
-
-//     // const product = {
-//     //   title: req.body.title,
-//     //   description: req.body.description,
-//     //   image: req.body.image,
-//     //   price: req.body.price,
-
-//     // };
-
-//     const newProduct = await Product.create(req.body);
-//     // Update the creator with the products
-//     await Creator.findOneAndUpdate(
-//       { _id: req.body.creatorId },
-//       {
-//         $push: { products: newProduct._id },
-//       }
-//     );
-//     return res.status(201).json(newProduct);
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
 const createOneProduct = async (req, res, next) => {
   try {
+    console.log(req.body);
     req.body.user = req.user._id;
     if (req.file) {
       req.body.image = req.file.path;
@@ -45,7 +18,6 @@ const createOneProduct = async (req, res, next) => {
         $push: { products: newProduct._id },
       }
     );
-
     return res.status(201).json(newProduct);
   } catch (error) {
     return next(error);
@@ -89,8 +61,18 @@ const getProductsByCreator = async (req, res, next) => {
   }
 };
 
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   createOneProduct,
   getAllProducts,
   getProductsByCreator,
+  getProductById,
 };
