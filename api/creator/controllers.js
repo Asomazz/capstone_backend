@@ -38,7 +38,6 @@ const getProfile = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    console.log(req.user);
     if (req.file) {
       req.body.image = req.file.path;
     }

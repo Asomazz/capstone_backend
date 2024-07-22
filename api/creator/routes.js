@@ -16,7 +16,7 @@ creatorRouter.post("/register/", register);
 creatorRouter.put(
   "/profile/",
   passport.authenticate("jwt", { session: false }),
-  // upload.single("image"),
+  upload.single("image"),
   updateProfile
 );
 
