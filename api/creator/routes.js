@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { getProfile, register, updateProfile } = require("./controllers");
+const { getProfile, register, updateProfile, login } = require("./controllers");
 
 const upload = require("../../middlewares/multer");
 const passport = require("passport");
@@ -12,11 +12,18 @@ creatorRouter.get(
   passport.authenticate("jwt", { session: false }),
   getProfile
 );
+
+creatorRouter.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  login
+);
+
 creatorRouter.post("/register/", register);
 creatorRouter.put(
   "/profile/",
   passport.authenticate("jwt", { session: false }),
-  // upload.single("image"),
+  upload.single("image"),
   updateProfile
 );
 
