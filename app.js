@@ -9,6 +9,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const creatorRouter = require("./api/creator/routes");
 const productRouter = require("./api/product/routes");
+const receiptRouter = require("./api/Receipt/routes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/media", express.static(path.join(__dirname, "media")));
 //  routers
 app.use("/product", productRouter);
 app.use("/creator", creatorRouter);
+app.use("/receipt", receiptRouter);
 
 // middlewares after routers
 
