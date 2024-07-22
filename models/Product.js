@@ -6,17 +6,12 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     default: "media/image.jpeg",
   },
-  price: Number,
-<<<<<<< HEAD
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Creator",
+  price: {
+    type: Number,
+    required: true,
   },
-  // receipt: { type: mongoose.Schema.Types.ObjectId, ref: "Receipt" },
-=======
+  description: String,
   creator: { type: mongoose.Schema.Types.ObjectId, ref: "Creator" },
-  receipt: { type: mongoose.Schema.Types.ObjectId, ref: "Receipt" },
->>>>>>> origin/main
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

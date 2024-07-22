@@ -94,14 +94,7 @@ const deleteProduct = async (req, res, next) => {
     return next(error);
   }
 };
-const getAllProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find();
-    return res.json(products);
-  } catch (error) {
-    return next(error);
-  }
-};
+//
 
 const getProductsByCreator = async (req, res, next) => {
   try {
@@ -120,10 +113,30 @@ const getProductsByCreator = async (req, res, next) => {
   }
 };
 
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   createOneProduct,
   getAllProducts,
+  getProductsByCreator,
+  getProductById,
   getProduct,
   updateProduct,
   deleteProduct,
 };
+
+// const getAllProducts = async (req, res, next) => {
+//   //   try {
+//   //     const products = await Product.find();
+//   //     return res.json(products);
+//   //   } catch (error) {
+//   //     return next(error);
+//   //   }
+//   // };

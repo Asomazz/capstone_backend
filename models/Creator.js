@@ -8,7 +8,7 @@ const CreatorSchema = new mongoose.Schema({
   name: { type: String },
   bio: { type: String },
   revenue: { type: Number },
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   instagram: { type: String },
   snapchat: { type: String },
   twitter: { type: String },
