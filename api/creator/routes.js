@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { getProfile, register, updateProfile } = require("./controllers");
+const { getProfile, register, updateProfile, login } = require("./controllers");
 
 const upload = require("../../middlewares/multer");
 const passport = require("passport");
@@ -14,5 +14,9 @@ creatorRouter.get(
 );
 creatorRouter.post("/register", register);
 creatorRouter.put("/profile/:id", upload.single("image"), updateProfile);
-
+creatorRouter.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  login
+);
 module.exports = creatorRouter;

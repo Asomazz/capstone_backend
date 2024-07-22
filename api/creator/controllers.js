@@ -7,6 +7,7 @@ const generateToken = (creator) => {
   const payload = {
     _id: creator._id,
     username: creator.username,
+    email: creator.email,
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TOKEN_EXP,
@@ -51,9 +52,19 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
+const login = (req, res, next) => {
+  try {
+    const token = generateToken(req.user);
+    return res.json({ token });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   generateToken,
   register,
   getProfile,
   updateProfile,
+  login,
 };
