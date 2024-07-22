@@ -7,20 +7,20 @@ require("dotenv").config();
 
 const localStrategy = new LocalStrategy(
   {
-    usernameField: "username",
+    usernameField: "email",
     passwordField: "password",
   },
-  async (username, password, next) => {
+  async (email, password, next) => {
     try {
       const creator = await Creator.findOne({
-        username: username,
+        email: email,
       });
       if (!creator) {
-        return next({ msg: "Username or password is wrong!" });
+        return next({ msg: "email or password is wrong!" });
       }
       const checkPassword = await bcrypt.compare(password, creator.password);
       if (checkPassword == false) {
-        return next({ msg: "Username or password is wrong!" });
+        return next({ msg: "email or password is wrong!" });
       }
       next(false, creator);
     } catch (error) {

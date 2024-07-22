@@ -94,6 +94,31 @@ const deleteProduct = async (req, res, next) => {
     return next(error);
   }
 };
+const getAllProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    return res.json(products);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getProductsByCreator = async (req, res, next) => {
+  try {
+    const creator = await Creator.findOne({
+      username: req.params.creatorUsername,
+    })
+      .populate("products")
+      .select("-password -email");
+    console.log(creator);
+    if (!creator || creator.length == 0) {
+      return res.status(404).json({ message: "Creator not found" });
+    }
+    return res.json(creator);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 module.exports = {
   createOneProduct,
