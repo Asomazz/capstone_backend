@@ -44,13 +44,21 @@ const createReceipt = async (req, res, next) => {
 
 const getReceipt = async (req, res, next) => {
   try {
-      const receipt = await Receipt.find()
+      const receipt = await Receipt.findById(req.params._id)
     return res.json(receipt);
   } catch (error) {
     next(error);
   }
 };
 
+const getAllReceipt = async (req, res, next) => {
+  try {
+      const receipt = await Receipt.find()
+    return res.json(receipts);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getRevenue = async (req, res, next) => {
   try {
@@ -77,5 +85,6 @@ const getRevenue = async (req, res, next) => {
 
 module.exports = {
   createReceipt,
-  getReceipt, getRevenue
+  getReceipt, getRevenue,
+  getAllReceipt
 };
