@@ -96,27 +96,47 @@ const deleteProduct = async (req, res, next) => {
 };
 //
 
-const getProductsByCreator = async (req, res, next) => {
-  try {
-    const creator = await Creator.findOne({
-      username: req.params.creatorUsername,
-    })
-      .populate("products")
-      .select("-password -email");
-    console.log(creator);
-    if (!creator || creator.length == 0) {
-      return res.status(404).json({ message: "Creator not found" });
-    }
-    return res.json(creator);
-  } catch (error) {
-    return next(error);
-  }
-};
+// const getProductsByCreator = async (req, res, next) => {
+//   try {
+//     const creator = await Creator.findOne({
+//       username: req.params.creatorUsername,
+//     })
+//       .populate("products")
+//       .select("-password -email");
+//     console.log(creator);
+//     if (!creator || creator.length == 0) {
+//       return res.status(404).json({ message: "Creator not found" });
+//     }
+//     return res.json(creator);
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
 
 const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
     return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getProductsByCreator = async (req, res, next) => {
+  try {
+    const creator = await Creator.findOne({
+      username: req.params.creatorUsername,
+    })
+      .populate({
+        path: "products",
+        model: "Product",
+      })
+      .select("-password -email");
+    console.log(creator);
+    if (!creator) {
+      return res.status(404).json({ message: "Creator not found" });
+    }
+    return res.json(creator);
   } catch (error) {
     return next(error);
   }
