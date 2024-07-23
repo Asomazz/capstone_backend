@@ -31,8 +31,24 @@ const getAllProducts = async (req, res, next) => {
 
     const products = await Product.find({ creator: creatorId }).populate(
       "creator",
-      "name username _id"
+      "name username"
     );
+    console.log(products);
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return next(error);
+  }
+};
+const getAllProductsCreator = async (req, res, next) => {
+  try {
+    const creatorId = req.user._id;
+
+    const products = await Product.find({ creator: creatorId }).populate(
+      "creator",
+      "name username"
+    );
+    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -150,6 +166,7 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
+  getAllProductsCreator,
 };
 
 // const getAllProducts = async (req, res, next) => {
