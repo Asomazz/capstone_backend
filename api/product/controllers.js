@@ -4,10 +4,12 @@ const Product = require("../../models/Product.js");
 const createOneProduct = async (req, res, next) => {
   try {
     req.body.creator = req.user._id;
+    console.log("initial Image", req.body.image);
+    console.log("initial file", req.file.path);
     if (req.file) {
       req.body.image = req.file.path;
     }
-
+    console.log(req.body.image);
     const newProduct = await Product.create(req.body);
 
     await Creator.findByIdAndUpdate(req.body.creator, {
@@ -58,12 +60,12 @@ const getProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  console.log("first");
   try {
     const id = req.params.id;
     if (req.file) {
       req.body.image = req.file.path;
     }
+
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     }).populate("creator", "name username _id");
@@ -94,14 +96,6 @@ const deleteProduct = async (req, res, next) => {
     return next(error);
   }
 };
-const getAllProducts = async (req, res, next) => {
-  try {
-    const products = await Product.find();
-    return res.json(products);
-  } catch (error) {
-    return next(error);
-  }
-};
 
 const getProductsByCreator = async (req, res, next) => {
   try {
@@ -126,4 +120,5 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
+  getProductsByCreator,
 };
