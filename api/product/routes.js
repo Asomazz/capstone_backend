@@ -7,11 +7,18 @@ const {
   updateProduct,
   deleteProduct,
   getProductsByCreator,
+  getAllProductsCreator,
 } = require("./controllers");
 const passport = require("passport");
 const upload = require("../../middlewares/multer");
 
 productRouter.get("/", getAllProducts);
+
+productRouter.get(
+  "/creator",
+  passport.authenticate("jwt", { session: false }),
+  getAllProductsCreator
+);
 
 productRouter.get("/creator/:creatorUsername", getProductsByCreator);
 
