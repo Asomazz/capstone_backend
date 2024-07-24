@@ -129,14 +129,6 @@ const deleteProduct = async (req, res, next) => {
 //   }
 // };
 
-const getProductById = async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.params.productId);
-    return res.json(product);
-  } catch (error) {
-    return next(error);
-  }
-};
 
 const getProductsByCreator = async (req, res, next) => {
   try {
@@ -152,11 +144,44 @@ const getProductsByCreator = async (req, res, next) => {
     if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }
+
+    creator.storeClicks++
+    creator.save()
+
     return res.json(creator);
   } catch (error) {
     return next(error);
   }
 };
+
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    product.productClicks++
+    product.save()
+
+    return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+
+const clicksTracker = async (req, res, next) => {
+  try {
+
+    const product = await Product.findById(req.params.productId);
+
+    product.productClicks++
+    product.save()
+    
+    return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 
 module.exports = {
   createOneProduct,
