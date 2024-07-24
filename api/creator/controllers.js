@@ -31,7 +31,10 @@ const register = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    return res.json(req.user);
+    const profile = await Creator.findById(req.user._id)
+      .select("-password")
+      .populate("receipts products");
+    return res.json(profile);
   } catch (error) {
     next(error);
   }
