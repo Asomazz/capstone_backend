@@ -4,8 +4,6 @@ const Product = require("../../models/Product.js");
 const createOneProduct = async (req, res, next) => {
   try {
     req.body.creator = req.user._id;
-    console.log("initial Image", req.body.image);
-    console.log("initial file", req.file.path);
     if (req.file) {
       req.body.image = req.file.path;
     }
