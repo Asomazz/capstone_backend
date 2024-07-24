@@ -14,12 +14,13 @@ creatorRouter.get(
 );
 
 creatorRouter.post(
-  "/login",
+  "/login/",
   passport.authenticate("local", { session: false }),
   login
 );
 
 creatorRouter.post("/register/", register);
+
 creatorRouter.put(
   "/profile/",
   passport.authenticate("jwt", { session: false }),
