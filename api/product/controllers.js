@@ -136,9 +136,16 @@ const clicksTracker = async (req, res, next) => {
 
     const product = await Product.findById(req.params.productId);
 
-    product.productClicks++
+  if(req.body.type == "buy"){
+    product.buyNowClicks++
     product.save()
-    
+  }else if(eq.body.type == "cart"){
+    product.addToCartClicks++
+    product.save()
+  }else{
+    res.status(404).json({message:"type is not there"})
+  }
+
     return res.json(product);
   } catch (error) {
     return next(error);
@@ -153,6 +160,7 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
+  clicksTracker
 };
 
 // const getAllProducts = async (req, res, next) => {
