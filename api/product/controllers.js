@@ -7,7 +7,7 @@ const createOneProduct = async (req, res, next) => {
     if (req.file) {
       req.body.image = req.file.path;
     }
-
+    console.log(req.body.image);
     const newProduct = await Product.create(req.body);
 
     await Creator.findByIdAndUpdate(req.body.creator, {
@@ -31,8 +31,24 @@ const getAllProducts = async (req, res, next) => {
 
     const products = await Product.find({ creator: creatorId }).populate(
       "creator",
-      "name username _id"
+      "name username"
     );
+    console.log(products);
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return next(error);
+  }
+};
+const getAllProductsCreator = async (req, res, next) => {
+  try {
+    const creatorId = req.user._id;
+
+    const products = await Product.find({ creator: creatorId }).populate(
+      "creator",
+      "name username"
+    );
+    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -58,12 +74,12 @@ const getProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  console.log("first");
   try {
     const id = req.params.id;
     if (req.file) {
       req.body.image = req.file.path;
     }
+
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     }).populate("creator", "name username _id");
@@ -96,20 +112,40 @@ const deleteProduct = async (req, res, next) => {
 };
 //
 
+// const getProductsByCreator = async (req, res, next) => {
+//   try {
+//     const creator = await Creator.findOne({
+//       username: req.params.creatorUsername,
+//     })
+//       .populate("products")
+//       .select("-password -email");
+//     console.log(creator);
+//     if (!creator || creator.length == 0) {
+//       return res.status(404).json({ message: "Creator not found" });
+//     }
+//     return res.json(creator);
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
+
 const getProductsByCreator = async (req, res, next) => {
   try {
     const creator = await Creator.findOne({
       username: req.params.creatorUsername,
     })
-      .populate("products")
+      .populate({
+        path: "products",
+        model: "Product",
+      })
       .select("-password -email");
     console.log(creator);
-    if (!creator || creator.length == 0) {
+    if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }
 
-    creator.storeClicks++
-    creator.save()
+    creator.storeClicks++;
+    creator.save();
 
     return res.json(creator);
   } catch (error) {
@@ -121,8 +157,8 @@ const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
 
-    product.productClicks++
-    product.save()
+    product.productClicks++;
+    product.save();
 
     return res.json(product);
   } catch (error) {
@@ -130,10 +166,8 @@ const getProductById = async (req, res, next) => {
   }
 };
 
-
 const clicksTracker = async (req, res, next) => {
   try {
-
     const product = await Product.findById(req.params.productId);
 
   if(req.body.type == "buy"){
@@ -160,7 +194,8 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
-  clicksTracker
+  clicksTracker,
+  getAllProductsCreator,
 };
 
 // const getAllProducts = async (req, res, next) => {
