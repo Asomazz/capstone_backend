@@ -14,11 +14,15 @@ const CreatorSchema = new mongoose.Schema({
   tiktok: { type: String },
   snapchat: { type: String },
   twitter: { type: String },
+<<<<<<< HEAD
+  tiktok: { type: String },
+=======
   storeClicks: { type: Number, default: 0 },
   instagramClicks: { type: Number, default: 0 },
   tiktokClicks: { type: Number, default: 0 },
   snapchatClicks: { type: Number, default: 0 },
   twitterClicks: { type: Number, default: 0 },
+>>>>>>> origin/main
 });
 
 module.exports = mongoose.model("Creator", CreatorSchema);
