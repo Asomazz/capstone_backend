@@ -5,7 +5,7 @@ const createOneProduct = async (req, res, next) => {
   try {
     req.body.creator = req.user._id;
     if (req.file) {
-      req.body.image = req.file.path;
+      req.body.image = req.file.path.replace("\\", "/");
     }
     console.log(req.body.image);
     const newProduct = await Product.create(req.body);
@@ -170,15 +170,15 @@ const clicksTracker = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
 
-  if(req.body.type == "buy"){
-    product.buyNowClicks++
-    product.save()
-  }else if(eq.body.type == "cart"){
-    product.addToCartClicks++
-    product.save()
-  }else{
-    res.status(404).json({message:"type is not there"})
-  }
+    if (req.body.type == "buy") {
+      product.buyNowClicks++;
+      product.save();
+    } else if (eq.body.type == "cart") {
+      product.addToCartClicks++;
+      product.save();
+    } else {
+      res.status(404).json({ message: "type is not there" });
+    }
 
     return res.json(product);
   } catch (error) {
