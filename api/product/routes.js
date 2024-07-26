@@ -12,7 +12,11 @@ const {
 const passport = require("passport");
 const upload = require("../../middlewares/multer");
 
-productRouter.get("/", getAllProducts);
+productRouter.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  getAllProducts
+);
 
 productRouter.get(
   "/creator",
