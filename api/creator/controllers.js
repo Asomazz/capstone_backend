@@ -45,12 +45,18 @@ const updateProfile = async (req, res, next) => {
     if (req.file) {
       req.body.image = req.file.path;
     }
+
+    const updatedData = {};
+    for (const key in req.body) {
+      if (req.body[key]) {
+        updatedData[key] = req.body[key];
+      }
+    }
+
     const updatedProfile = await Creator.findByIdAndUpdate(
       req.user._id,
-      req.body,
-      {
-        new: true,
-      }
+      updatedData,
+      { new: true }
     );
     return res.status(200).json(updatedProfile);
   } catch (error) {
