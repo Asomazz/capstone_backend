@@ -13,6 +13,7 @@ const CreatorSchema = new mongoose.Schema({
   instagram: { type: String },
   snapchat: { type: String },
   twitter: { type: String },
+  tiktok: { type: String },
 });
 
 module.exports = mongoose.model("Creator", CreatorSchema);
