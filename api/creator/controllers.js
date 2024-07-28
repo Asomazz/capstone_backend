@@ -18,6 +18,7 @@ const generateToken = (creator) => {
 
 const register = async (req, res, next) => {
   try {
+    console.log(req.body);
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const newCreator = await Creator.create(req.body);
 
@@ -32,6 +33,7 @@ const register = async (req, res, next) => {
 const getProfile = async (req, res, next) => {
   try {
     const profile = await Creator.findById(req.user._id)
+
       .select("-password")
       .populate("receipts products");
     return res.json(profile);
