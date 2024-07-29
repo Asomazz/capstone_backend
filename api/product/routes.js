@@ -8,6 +8,7 @@ const {
   deleteProduct,
   getProductsByCreator,
   getAllProductsCreator,
+  extraClicksTracker,
 } = require("./controllers");
 const passport = require("passport");
 const upload = require("../../middlewares/multer");
@@ -29,7 +30,10 @@ productRouter.get("/creator/:creatorUsername", getProductsByCreator);
 productRouter.post(
   "/",
   passport.authenticate("jwt", { session: false }),
-  upload.single("image"),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "pdf", maxCount: 1 },
+  ]),
   createOneProduct
 );
 
@@ -38,7 +42,10 @@ productRouter.get("/:id", getProduct);
 productRouter.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
-  upload.single("image"),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "pdf", maxCount: 1 },
+  ]),
   updateProduct
 );
 
@@ -46,6 +53,12 @@ productRouter.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   deleteProduct
+);
+
+productRouter.get(
+  "/:productId",
+  passport.authenticate("jwt", { session: false }),
+  extraClicksTracker
 );
 
 module.exports = productRouter;

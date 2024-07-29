@@ -16,11 +16,7 @@ const CreatorSchema = new mongoose.Schema({
   snapchat: { type: String },
   twitter: { type: String },
   tiktok: { type: String },
-  storeClicks: { type: Number, default: 0 },
-  instagramClicks: { type: Number, default: 0 },
-  tiktokClicks: { type: Number, default: 0 },
-  snapchatClicks: { type: Number, default: 0 },
-  twitterClicks: { type: Number, default: 0 },
+  clicks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Click" }],
 });
 
 module.exports = mongoose.model("Creator", CreatorSchema);

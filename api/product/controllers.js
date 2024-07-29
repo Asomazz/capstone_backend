@@ -1,13 +1,20 @@
+const Click = require("../../models/Click.js");
 const Creator = require("../../models/Creator.js");
 const Product = require("../../models/Product.js");
 
 const createOneProduct = async (req, res, next) => {
   try {
     req.body.creator = req.user._id;
-    if (req.file) {
-      req.body.image = req.file.path.replace("\\", "/");
+
+    if (req.files.image) {
+      req.body.image = req.files.image[0].path.replace("\\", "/");
     }
-    console.log(req.body.image);
+
+    if (req.files.pdf) {
+      req.body.file = req.files.pdf[0].path.replace("\\", "/");
+
+    }
+
     const newProduct = await Product.create(req.body);
 
     await Creator.findByIdAndUpdate(req.body.creator, {
@@ -33,13 +40,13 @@ const getAllProducts = async (req, res, next) => {
       "creator",
       "name username"
     );
-    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
     return next(error);
   }
 };
+
 const getAllProductsCreator = async (req, res, next) => {
   try {
     const creatorId = req.user._id;
@@ -48,7 +55,6 @@ const getAllProductsCreator = async (req, res, next) => {
       "creator",
       "name username"
     );
-    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -64,6 +70,13 @@ const getProduct = async (req, res, next) => {
       "name username _id"
     );
     if (product) {
+      const click = await Click.create({
+        product: product._id,
+        productClick: true,
+      });
+
+      await product.updateOne({ $push: { clicks: click._id } });
+
       return res.status(200).json(product);
     } else {
       return res.status(404).json({ message: "No product with this ID" });
@@ -76,8 +89,12 @@ const getProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
-    if (req.file) {
-      req.body.image = req.file.path;
+    if (req.files.image) {
+      req.body.image = req.files.image[0].path;
+    }
+
+    if (req.files.pdf) {
+      req.body.file = req.files.pdf[0].path;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
@@ -110,24 +127,6 @@ const deleteProduct = async (req, res, next) => {
     return next(error);
   }
 };
-//
-
-// const getProductsByCreator = async (req, res, next) => {
-//   try {
-//     const creator = await Creator.findOne({
-//       username: req.params.creatorUsername,
-//     })
-//       .populate("products")
-//       .select("-password -email");
-//     console.log(creator);
-//     if (!creator || creator.length == 0) {
-//       return res.status(404).json({ message: "Creator not found" });
-//     }
-//     return res.json(creator);
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
 
 const getProductsByCreator = async (req, res, next) => {
   try {
@@ -139,13 +138,16 @@ const getProductsByCreator = async (req, res, next) => {
         model: "Product",
       })
       .select("-password -email");
-    console.log(creator);
     if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }
 
-    creator.storeClicks++;
-    creator.save();
+    const click = await Click.create({
+      creator: creator._id,
+      storeClick: true,
+    });
+
+    await creator.updateOne({ $push: { clicks: click._id } });
 
     return res.json(creator);
   } catch (error) {
@@ -157,23 +159,30 @@ const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
 
-    product.productClicks++;
-    product.save();
+    const click = await Click.create({
+      product: product._id,
+      productClick: true,
+    });
+    console.log(click);
 
+    await product.updateOne({ $push: { clicks: click._id } });
+    console.log(product);
     return res.json(product);
   } catch (error) {
     return next(error);
   }
 };
 
-const clicksTracker = async (req, res, next) => {
+const extraClicksTracker = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
 
     if (req.body.type == "buy") {
       product.buyNowClicks++;
       product.save();
-    } else if (eq.body.type == "cart") {
+
+    } else if (req.body.type == "cart") {
+
       product.addToCartClicks++;
       product.save();
     } else {
@@ -194,15 +203,6 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
-  clicksTracker,
+  extraClicksTracker,
   getAllProductsCreator,
 };
-
-// const getAllProducts = async (req, res, next) => {
-//   //   try {
-//   //     const products = await Product.find();
-//   //     return res.json(products);
-//   //   } catch (error) {
-//   //     return next(error);
-//   //   }
-//   // };

@@ -35,7 +35,7 @@ const getProfile = async (req, res, next) => {
     const profile = await Creator.findById(req.user._id)
 
       .select("-password")
-      .populate("receipts products");
+      .populate("receipts products clicks");
     return res.json(profile);
   } catch (error) {
     next(error);
