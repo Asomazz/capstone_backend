@@ -139,7 +139,7 @@ const getProductsByCreator = async (req, res, next) => {
         model: "Product",
       })
       .select("-password -email");
-    console.log(creator);
+    console.log("creator");
     if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }

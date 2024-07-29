@@ -1,6 +1,7 @@
 const Receipt = require("../../models/Receipt");
 const Creator = require("../../models/Creator");
 const nodemailer = require("nodemailer");
+const sendEXPONotification = require("../utils/notifications");
 require("dotenv").config();
 
 const createReceipt = async (req, res, next) => {
@@ -21,7 +22,7 @@ const createReceipt = async (req, res, next) => {
     // Send email to the customer
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 465,
       secure: true,
       auth: {
@@ -50,6 +51,11 @@ const getReceipt = async (req, res, next) => {
     const receipt = await Receipt.findById(req.params._id).populate(
       "creator products",
       "-password"
+    );
+    sendEXPONotification(
+      receipt.creator.notification_token,
+      "A new order",
+      "Amount" + receipt.totalAmount
     );
     return res.json(receipt);
   } catch (error) {
