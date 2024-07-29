@@ -3,16 +3,9 @@ const receiptRouter = express.Router();
 const { getReceipt, createReceipt, getRevenue } = require("./controllers");
 const passport = require("passport");
 
-receiptRouter.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  getReceipt
-);
+receiptRouter.get("/:_id", getReceipt);
 
-receiptRouter.post(
-  "/",
-  createReceipt
-);
+receiptRouter.post("/", createReceipt);
 receiptRouter.get(
   "/",
   passport.authenticate("jwt", { session: false }),
