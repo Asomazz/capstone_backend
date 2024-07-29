@@ -10,6 +10,8 @@ const cors = require("cors");
 const creatorRouter = require("./api/creator/routes");
 const productRouter = require("./api/product/routes");
 const receiptRouter = require("./api/Receipt/routes");
+const stripeRouter = require("./api/Stripe/routes");
+const notificationRouter = require("./api/notification/routes");
 
 const app = express();
 
@@ -28,12 +30,14 @@ app.use("/media", express.static(path.join(__dirname, "media")));
 app.use("/product", productRouter);
 app.use("/creator", creatorRouter);
 app.use("/receipt", receiptRouter);
+app.use("/stripe", stripeRouter);
 
+app.use("/notifications", notificationRouter);
 // middlewares after routers
 
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(8000, () => {
-  console.log("The application is running on localhost:8000");
+app.listen(8001, () => {
+  console.log("The application is running on localhost:8001");
 });

@@ -7,11 +7,12 @@ const createOneProduct = async (req, res, next) => {
     req.body.creator = req.user._id;
 
     if (req.files.image) {
-      req.body.image = req.files.image[0].path;
+      req.body.image = req.files.image[0].path.replace("\\", "/");
     }
 
     if (req.files.pdf) {
-      req.body.file = req.files.pdf[0].path;
+      req.body.file = req.files.pdf[0].path.replace("\\", "/");
+
     }
 
     const newProduct = await Product.create(req.body);
@@ -179,7 +180,9 @@ const extraClicksTracker = async (req, res, next) => {
     if (req.body.type == "buy") {
       product.buyNowClicks++;
       product.save();
+
     } else if (req.body.type == "cart") {
+
       product.addToCartClicks++;
       product.save();
     } else {

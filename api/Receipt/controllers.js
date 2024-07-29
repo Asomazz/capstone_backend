@@ -45,6 +45,7 @@ const createReceipt = async (req, res, next) => {
       .join("");
 
     // Send email to the customer
+
     const transporter = nodemailer.createTransport({
       host: "sandbox.smtp.mailtrap.io",
       port: 2525,
@@ -80,7 +81,8 @@ const createReceipt = async (req, res, next) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+
+    // await transporter.sendMail(mailOptions);
 
     return res.status(201).json(receipt);
   } catch (error) {
@@ -90,7 +92,12 @@ const createReceipt = async (req, res, next) => {
 
 const getReceipt = async (req, res, next) => {
   try {
-    const receipt = await Receipt.findById(req.params._id);
+
+    const receipt = await Receipt.findById(req.params._id).populate(
+      "creator products",
+      "-password"
+    );
+
     return res.json(receipt);
   } catch (error) {
     next(error);
@@ -99,7 +106,9 @@ const getReceipt = async (req, res, next) => {
 
 const getAllReceipt = async (req, res, next) => {
   try {
-    const receipt = await Receipt.find();
+
+    const receipts = await Receipt.find();
+
     return res.json(receipts);
   } catch (error) {
     next(error);
