@@ -1,4 +1,4 @@
-  const Receipt = require("../../models/Receipt");
+const Receipt = require("../../models/Receipt");
 const Creator = require("../../models/Creator");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
@@ -19,22 +19,22 @@ const createReceipt = async (req, res, next) => {
     await creator.save();
 
     // Send email to the customer
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: "Gmail",
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: receipt.customerEmail,
-      subject: "Your Receipt",
-      text: `Hello ${receipt.customerName},\n\nThank you for your purchase. Here are your receipt details:\n\nTotal Amount: ${receipt.totalAmount}\n\nLink to download your product: <link_placeholder>\n\nBest regards,\nYour Company`,
-    };
+    // const mailOptions = {
+    //   from: process.env.EMAIL_USER,
+    //   to: receipt.customerEmail,
+    //   subject: "Your Receipt",
+    //   text: `Hello ${receipt.customerName},\n\nThank you for your purchase. Here are your receipt details:\n\nTotal Amount: ${receipt.totalAmount}\n\nLink to download your product: <link_placeholder>\n\nBest regards,\nYour Company`,
+    // };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
     return res.json(receipt);
   } catch (error) {
@@ -44,7 +44,10 @@ const createReceipt = async (req, res, next) => {
 
 const getReceipt = async (req, res, next) => {
   try {
-      const receipt = await Receipt.findById(req.params._id)
+    const receipt = await Receipt.findById(req.params._id).populate(
+      "creator products",
+      "-password"
+    );
     return res.json(receipt);
   } catch (error) {
     next(error);
@@ -53,7 +56,7 @@ const getReceipt = async (req, res, next) => {
 
 const getAllReceipt = async (req, res, next) => {
   try {
-      const receipt = await Receipt.find()
+    const receipts = await Receipt.find();
     return res.json(receipts);
   } catch (error) {
     next(error);
@@ -63,17 +66,17 @@ const getAllReceipt = async (req, res, next) => {
 const getRevenue = async (req, res, next) => {
   try {
     const creatorId = req.user._id;
-    const creator = await Creator.findById(creatorId).populate('products');
+    const creator = await Creator.findById(creatorId).populate("products");
     const totalRevenue = creator.revenue;
     const dailyRevenue = await Receipt.aggregate([
       { $match: { creator: creatorId } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          amount: { $sum: "$totalAmount" }
-        }
+          amount: { $sum: "$totalAmount" },
+        },
       },
-      { $sort: { _id: 1 } }
+      { $sort: { _id: 1 } },
     ]);
 
     res.json({ totalRevenue, dailyRevenue });
@@ -82,9 +85,9 @@ const getRevenue = async (req, res, next) => {
   }
 };
 
-
 module.exports = {
   createReceipt,
-  getReceipt, getRevenue,
-  getAllReceipt
+  getReceipt,
+  getRevenue,
+  getAllReceipt,
 };
