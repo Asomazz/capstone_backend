@@ -10,6 +10,7 @@ const cors = require("cors");
 const creatorRouter = require("./api/creator/routes");
 const productRouter = require("./api/product/routes");
 const receiptRouter = require("./api/Receipt/routes");
+const stripeRouter = require("./api/Stripe/routes");
 const notificationRouter = require("./api/notification/routes");
 
 const app = express();
@@ -29,6 +30,8 @@ app.use("/media", express.static(path.join(__dirname, "media")));
 app.use("/product", productRouter);
 app.use("/creator", creatorRouter);
 app.use("/receipt", receiptRouter);
+app.use("/stripe", stripeRouter);
+
 app.use("/notifications", notificationRouter);
 // middlewares after routers
 
