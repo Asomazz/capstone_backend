@@ -12,7 +12,6 @@ const createOneProduct = async (req, res, next) => {
 
     if (req.files.pdf) {
       req.body.file = req.files.pdf[0].path.replace("\\", "/");
-
     }
 
     const newProduct = await Product.create(req.body);
@@ -157,16 +156,11 @@ const getProductsByCreator = async (req, res, next) => {
 
 const getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.productId);
-
-    const click = await Click.create({
-      product: product._id,
-      productClick: true,
-    });
-    console.log(click);
-
-    await product.updateOne({ $push: { clicks: click._id } });
-    console.log(product);
+    const id = req.params.id;
+    const product = await Product.findById(id).populate(
+      "creator",
+      "name username _id"
+    );
     return res.json(product);
   } catch (error) {
     return next(error);
@@ -180,9 +174,7 @@ const extraClicksTracker = async (req, res, next) => {
     if (req.body.type == "buy") {
       product.buyNowClicks++;
       product.save();
-
     } else if (req.body.type == "cart") {
-
       product.addToCartClicks++;
       product.save();
     } else {

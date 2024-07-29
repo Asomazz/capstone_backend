@@ -38,6 +38,6 @@ app.use("/notifications", notificationRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(8001, () => {
-  console.log("The application is running on localhost:8001");
+app.listen(8000, () => {
+  console.log("The application is running on localhost:8000");
 });

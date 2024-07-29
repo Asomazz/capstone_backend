@@ -9,6 +9,7 @@ const {
   getProductsByCreator,
   getAllProductsCreator,
   extraClicksTracker,
+  getProductById,
 } = require("./controllers");
 const passport = require("passport");
 const upload = require("../../middlewares/multer");
@@ -37,6 +38,7 @@ productRouter.post(
   createOneProduct
 );
 
+productRouter.get("/app/:id", getProductById);
 productRouter.get("/:id", getProduct);
 
 productRouter.put(
