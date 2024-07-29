@@ -13,7 +13,7 @@ const localStrategy = new LocalStrategy(
   async (email, password, next) => {
     try {
       const creator = await Creator.findOne({
-        email: email,
+        email: email.toLowerCase(),
       });
       if (!creator) {
         return next({ msg: "email or password is wrong!" });
@@ -36,7 +36,6 @@ const jwtStrategy = new JwtStrategy(
   },
   async (payload, next) => {
     // here you check if token is exp
-
     // console.log("EXP:", payload.exp, "Time now", Date.now() / 1000);
 
     if (Date.now() / 1000 > payload.exp) {

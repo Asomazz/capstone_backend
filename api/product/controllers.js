@@ -5,9 +5,9 @@ const createOneProduct = async (req, res, next) => {
   try {
     req.body.creator = req.user._id;
     if (req.file) {
-      req.body.image = req.file.path;
+      req.body.image = req.file.path.replace("\\", "/");
     }
-
+    console.log(req.body.image);
     const newProduct = await Product.create(req.body);
 
     await Creator.findByIdAndUpdate(req.body.creator, {
@@ -31,8 +31,24 @@ const getAllProducts = async (req, res, next) => {
 
     const products = await Product.find({ creator: creatorId }).populate(
       "creator",
-      "name username _id"
+      "name username"
     );
+    console.log(products);
+
+    return res.status(200).json(products);
+  } catch (error) {
+    return next(error);
+  }
+};
+const getAllProductsCreator = async (req, res, next) => {
+  try {
+    const creatorId = req.user._id;
+
+    const products = await Product.find({ creator: creatorId }).populate(
+      "creator",
+      "name username"
+    );
+    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -58,12 +74,12 @@ const getProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  console.log("first");
   try {
     const id = req.params.id;
     if (req.file) {
       req.body.image = req.file.path;
     }
+
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     }).populate("creator", "name username _id");
@@ -113,15 +129,6 @@ const deleteProduct = async (req, res, next) => {
 //   }
 // };
 
-const getProductById = async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.params.productId);
-    return res.json(product);
-  } catch (error) {
-    return next(error);
-  }
-};
-
 const getProductsByCreator = async (req, res, next) => {
   try {
     const creator = await Creator.findOne({
@@ -136,7 +143,44 @@ const getProductsByCreator = async (req, res, next) => {
     if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }
+
+    creator.storeClicks++;
+    creator.save();
+
     return res.json(creator);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    product.productClicks++;
+    product.save();
+
+    return res.json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const clicksTracker = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    if (req.body.type == "buy") {
+      product.buyNowClicks++;
+      product.save();
+    } else if (eq.body.type == "cart") {
+      product.addToCartClicks++;
+      product.save();
+    } else {
+      res.status(404).json({ message: "type is not there" });
+    }
+
+    return res.json(product);
   } catch (error) {
     return next(error);
   }
@@ -150,6 +194,8 @@ module.exports = {
   getProduct,
   updateProduct,
   deleteProduct,
+  clicksTracker,
+  getAllProductsCreator,
 };
 
 // const getAllProducts = async (req, res, next) => {
