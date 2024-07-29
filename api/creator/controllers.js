@@ -18,6 +18,7 @@ const generateToken = (creator) => {
 
 const register = async (req, res, next) => {
   try {
+    console.log(req.body);
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const newCreator = await Creator.create(req.body);
 
@@ -31,7 +32,10 @@ const register = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
   try {
-    const profile = await Creator.findById(req.user._id).select("-password").populate("receipts products")
+    const profile = await Creator.findById(req.user._id)
+
+      .select("-password")
+      .populate("receipts products");
     return res.json(profile);
   } catch (error) {
     next(error);
@@ -43,12 +47,18 @@ const updateProfile = async (req, res, next) => {
     if (req.file) {
       req.body.image = req.file.path;
     }
+
+    const updatedData = {};
+    for (const key in req.body) {
+      if (req.body[key]) {
+        updatedData[key] = req.body[key];
+      }
+    }
+
     const updatedProfile = await Creator.findByIdAndUpdate(
       req.user._id,
-      req.body,
-      {
-        new: true,
-      }
+      updatedData,
+      { new: true }
     );
     return res.status(200).json(updatedProfile);
   } catch (error) {
