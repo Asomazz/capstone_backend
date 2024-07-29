@@ -69,6 +69,13 @@ const getProduct = async (req, res, next) => {
       "name username _id"
     );
     if (product) {
+      const click = await Click.create({
+        product: product._id,
+        productClick: true,
+      });
+
+      await product.updateOne({ $push: { clicks: click._id } });
+
       return res.status(200).json(product);
     } else {
       return res.status(404).json({ message: "No product with this ID" });
@@ -138,7 +145,7 @@ const getProductsByCreator = async (req, res, next) => {
       creator: creator._id,
       storeClick: true,
     });
-    console.log(click);
+
     await creator.updateOne({ $push: { clicks: click._id } });
 
     return res.json(creator);
@@ -151,9 +158,14 @@ const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.productId);
 
-    product.productClicks++;
-    product.save();
+    const click = await Click.create({
+      product: product._id,
+      productClick: true,
+    });
+    console.log(click);
 
+    await product.updateOne({ $push: { clicks: click._id } });
+    console.log(product);
     return res.json(product);
   } catch (error) {
     return next(error);
