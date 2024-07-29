@@ -16,9 +16,7 @@ const ProductSchema = new mongoose.Schema(
     receipts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Receipt" }],
     description: String,
     creator: { type: mongoose.Schema.Types.ObjectId, ref: "Creator" },
-    productClicks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Click" }],
-    buyNowClicks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Click" }],
-    addToCartClicks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Click" }],
+    clicks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Click" }],
   },
   { timestamps: true }
 );

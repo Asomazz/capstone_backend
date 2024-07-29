@@ -39,7 +39,6 @@ const getAllProducts = async (req, res, next) => {
       "creator",
       "name username"
     );
-    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -55,7 +54,6 @@ const getAllProductsCreator = async (req, res, next) => {
       "creator",
       "name username"
     );
-    console.log(products);
 
     return res.status(200).json(products);
   } catch (error) {
@@ -132,18 +130,16 @@ const getProductsByCreator = async (req, res, next) => {
         model: "Product",
       })
       .select("-password -email");
-    console.log(creator);
     if (!creator) {
       return res.status(404).json({ message: "Creator not found" });
     }
 
-    Click.create({
+    const click = await Click.create({
       creator: creator._id,
-      storeClicks: true,
+      storeClick: true,
     });
-
-    creator.storeClicks++;
-    creator.save();
+    console.log(click);
+    await creator.updateOne({ $push: { clicks: click._id } });
 
     return res.json(creator);
   } catch (error) {
