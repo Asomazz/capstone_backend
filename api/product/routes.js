@@ -9,6 +9,8 @@ const {
   getProductsByCreator,
   getAllProductsCreator,
   extraClicksTracker,
+  getProductById,
+  socialMediaClicksTracker,
 } = require("./controllers");
 const passport = require("passport");
 const upload = require("../../middlewares/multer");
@@ -37,6 +39,7 @@ productRouter.post(
   createOneProduct
 );
 
+productRouter.get("/app/:id", getProductById);
 productRouter.get("/:id", getProduct);
 
 productRouter.put(
@@ -55,10 +58,8 @@ productRouter.delete(
   deleteProduct
 );
 
-productRouter.get(
-  "/:productId",
-  passport.authenticate("jwt", { session: false }),
-  extraClicksTracker
-);
+productRouter.put("/tracker/extra/:productId", extraClicksTracker);
+
+productRouter.put("/treacker/social/:creatorId", socialMediaClicksTracker);
 
 module.exports = productRouter;

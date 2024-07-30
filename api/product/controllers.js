@@ -12,7 +12,6 @@ const createOneProduct = async (req, res, next) => {
 
     if (req.files.pdf) {
       req.body.file = req.files.pdf[0].path.replace("\\", "/");
-
     }
 
     const newProduct = await Product.create(req.body);
@@ -157,16 +156,11 @@ const getProductsByCreator = async (req, res, next) => {
 
 const getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.productId);
-
-    const click = await Click.create({
-      product: product._id,
-      productClick: true,
-    });
-    console.log(click);
-
-    await product.updateOne({ $push: { clicks: click._id } });
-    console.log(product);
+    const id = req.params.id;
+    const product = await Product.findById(id).populate(
+      "creator",
+      "name username _id"
+    );
     return res.json(product);
   } catch (error) {
     return next(error);
@@ -178,18 +172,66 @@ const extraClicksTracker = async (req, res, next) => {
     const product = await Product.findById(req.params.productId);
 
     if (req.body.type == "buy") {
-      product.buyNowClicks++;
-      product.save();
-
+      const click = await Click.create({
+        product: product._id,
+        buyNowClick: true,
+      });
+      await product.updateOne({ $push: { clicks: click._id } });
     } else if (req.body.type == "cart") {
-
-      product.addToCartClicks++;
-      product.save();
+      const click = await Click.create({
+        product: product._id,
+        addToCartClick: true,
+      });
+      await product.updateOne({ $push: { clicks: click._id } });
     } else {
       res.status(404).json({ message: "type is not there" });
     }
 
-    return res.json(product);
+    return res.status(200).json(product);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const socialMediaClicksTracker = async (req, res, next) => {
+  try {
+    const creator = await Creator.findOne({
+      username: req.params.creatorUsername,
+    });
+
+    if (!creator) {
+      return res.status(404).json({ message: "Creator not found" });
+    }
+    if (req.body.type == "instagram") {
+      const click = await Click.create({
+        creator: creator._id,
+        instagramClick: true,
+      });
+      await creator.updateOne({ $push: { clicks: click._id } });
+    }
+    if (req.body.type == "tiktok") {
+      const click = await Click.create({
+        creator: creator._id,
+        tiktokClick: true,
+      });
+      await creator.updateOne({ $push: { clicks: click._id } });
+    }
+    if (req.body.type == "snapchat") {
+      const click = await Click.create({
+        creator: creator._id,
+        snapchatClick: true,
+      });
+      await creator.updateOne({ $push: { clicks: click._id } });
+    }
+    if (req.body.type == "twitter") {
+      const click = await Click.create({
+        creator: creator._id,
+        twitterClick: true,
+      });
+      await creator.updateOne({ $push: { clicks: click._id } });
+    }
+
+    return res.status(200).json(creator);
   } catch (error) {
     return next(error);
   }
@@ -205,4 +247,5 @@ module.exports = {
   deleteProduct,
   extraClicksTracker,
   getAllProductsCreator,
+  socialMediaClicksTracker,
 };

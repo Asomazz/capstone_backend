@@ -33,9 +33,21 @@ const register = async (req, res, next) => {
 const getProfile = async (req, res, next) => {
   try {
     const profile = await Creator.findById(req.user._id)
-
       .select("-password")
-      .populate("receipts products clicks");
+      .populate({
+        path: "receipts",
+      })
+      .populate({
+        path: "products",
+        populate: {
+          path: "clicks",
+          model: "Click",
+        },
+      })
+      .populate({
+        path: "clicks",
+      });
+
     return res.json(profile);
   } catch (error) {
     next(error);
