@@ -11,7 +11,7 @@ const creatorRouter = require("./api/creator/routes");
 const productRouter = require("./api/product/routes");
 const receiptRouter = require("./api/Receipt/routes");
 const stripeRouter = require("./api/Stripe/routes");
-const notificationRouter = require("./api/notification/routes");
+const notificationRouter = require("./api/notification/Routes");
 
 const app = express();
 
